@@ -257,12 +257,12 @@ header.site-header .eyebrow {
   bottom: 20px;
   right: 20px;
   width: min(320px, calc(100vw - 40px));
-  padding: 10px;
   z-index: 10;
+  filter: drop-shadow(0 0 30px rgba(0, 0, 0, 0.45));
 }
 
 .spotify-corner iframe {
-  border-radius: 8px;
+  border-radius: 12px;
   display: block;
 }
 

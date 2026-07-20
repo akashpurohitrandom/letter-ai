@@ -3,7 +3,7 @@ export default function SpotifyPlayer() {
   if (!playlistId) return null;
 
   return (
-    <div className="spotify-corner hud">
+    <div className="spotify-corner">
       <iframe
         src={`https://open.spotify.com/embed/playlist/${playlistId}?utm_source=generator`}
         width="100%"
