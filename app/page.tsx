@@ -1,43 +1,19 @@
 import { supabase } from "@/lib/supabase";
-import Link from "next/link";
 import SpotifyPlayer from "@/components/SpotifyPlayer";
+import LettersGate from "@/components/LettersGate";
 
 export const dynamic = "force-dynamic";
 
 export default async function Home() {
-  const { data: letters } = await supabase
+  const { count } = await supabase
     .from("letters")
-    .select("*")
-    .eq("published", true)
-    .order("created_at", { ascending: false });
+    .select("*", { count: "exact", head: true })
+    .eq("published", true);
 
   return (
-    <main className="container">
-      <header className="site-header">
-        <div className="eyebrow">// unlocked for you</div>
-        <h1>Letters</h1>
-      </header>
-
+    <main className="landing">
       <SpotifyPlayer />
-
-      {(!letters || letters.length === 0) && (
-        <p style={{ textAlign: "center", color: "#8a7d6a" }}>
-          Nothing here yet — the first letter is on its way.
-        </p>
-      )}
-
-      {letters?.map((letter) => (
-        <Link key={letter.id} href={`/letters/${letter.slug}`} className="letter-card hud">
-          <h2>{letter.title}</h2>
-          <time>
-            {new Date(letter.created_at).toLocaleDateString(undefined, {
-              year: "numeric",
-              month: "long",
-              day: "numeric",
-            })}
-          </time>
-        </Link>
-      ))}
+      <LettersGate count={count || 0} />
     </main>
   );
 }

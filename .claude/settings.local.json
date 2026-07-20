@@ -6,7 +6,9 @@
       "Bash(brew install *)",
       "Bash(brew --version)",
       "Bash(git init *)",
-      "Bash(git add *)"
+      "Bash(git add *)",
+      "Bash(npx tsc *)",
+      "Bash(node -e ' *)"
     ]
   }
 }

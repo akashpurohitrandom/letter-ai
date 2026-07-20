@@ -1,18 +1,10 @@
 import { NextRequest, NextResponse } from "next/server";
 import { AUTH_COOKIE_NAME, isValidToken } from "./lib/auth";
 
+// Only the letters section is password-gated. The homepage (background +
+// Spotify + the LETTERS CTA) and /admin are public.
 export async function middleware(req: NextRequest) {
   const { pathname } = req.nextUrl;
-
-  // Always allow the unlock page and its API, and Next.js internals
-  if (
-    pathname.startsWith("/unlock") ||
-    pathname.startsWith("/api/unlock") ||
-    pathname.startsWith("/_next") ||
-    pathname.startsWith("/favicon")
-  ) {
-    return NextResponse.next();
-  }
 
   const token = req.cookies.get(AUTH_COOKIE_NAME)?.value;
 
@@ -27,5 +19,5 @@ export async function middleware(req: NextRequest) {
 }
 
 export const config = {
-  matcher: ["/((?!_next/static|_next/image).*)"],
+  matcher: ["/letters", "/letters/:path*"],
 };
