@@ -534,8 +534,7 @@ header.site-header .eyebrow {
 
   .ist-clock,
   .letters-cta,
-  .google-search,
-  .sticky-note {
+  .google-search {
     position: static;
     transform: none;
     top: auto;
@@ -549,17 +548,27 @@ header.site-header .eyebrow {
 
   .letters-cta { padding: 14px 26px; font-size: 1rem; }
 
-  .google-search,
-  .sticky-note {
+  .google-search {
     width: 100%;
     max-width: 320px;
   }
-
-  .sticky-note { text-align: center; }
 
   .spotify-corner {
     width: calc(100vw - 24px);
     right: 12px;
     bottom: 12px;
+  }
+
+  /* Docked directly above the fixed Spotify bar rather than in the scroll flow */
+  .sticky-note {
+    position: fixed;
+    left: 12px;
+    right: 12px;
+    top: auto;
+    bottom: 100px;
+    width: auto;
+    max-width: none;
+    transform: none;
+    text-align: center;
   }
 }
