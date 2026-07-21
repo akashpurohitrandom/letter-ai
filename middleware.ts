@@ -1,8 +1,8 @@
 import { NextRequest, NextResponse } from "next/server";
 import { AUTH_COOKIE_NAME, isValidToken } from "./lib/auth";
 
-// Only the letters section is password-gated. The homepage (background +
-// Spotify + the LETTERS CTA) and /admin are public.
+// The letters section and the admin (write) page are password-gated.
+// Only the homepage (background + Spotify + the LETTERS CTA) is public.
 export async function middleware(req: NextRequest) {
   const { pathname } = req.nextUrl;
 
@@ -19,5 +19,12 @@ export async function middleware(req: NextRequest) {
 }
 
 export const config = {
-  matcher: ["/letters", "/letters/:path*"],
+  matcher: [
+    "/letters",
+    "/letters/:path*",
+    "/admin",
+    "/admin/:path*",
+    "/api/letters",
+    "/api/letters/:path*",
+  ],
 };

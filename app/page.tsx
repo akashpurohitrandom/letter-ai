@@ -1,5 +1,6 @@
 import { supabase } from "@/lib/supabase";
 import LettersGate from "@/components/LettersGate";
+import Clock from "@/components/Clock";
 
 export const dynamic = "force-dynamic";
 
@@ -12,6 +13,7 @@ export default async function Home() {
   return (
     <main className="landing">
       <LettersGate count={count || 0} />
+      <Clock />
     </main>
   );
 }

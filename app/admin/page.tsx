@@ -50,13 +50,13 @@ export default function AdminPage() {
       <form className="admin-form hud" onSubmit={handleSubmit}>
         <input
           type="text"
-          placeholder="Title"
+          placeholder="Subject"
           value={title}
           onChange={(e) => setTitle(e.target.value)}
           required
         />
         <textarea
-          placeholder="Write it here... (Markdown supported)"
+          placeholder="Write the body here... (Markdown supported)"
           value={content}
           onChange={(e) => setContent(e.target.value)}
           required
