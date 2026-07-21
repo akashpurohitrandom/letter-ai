@@ -17,7 +17,8 @@ export default function StickyNote() {
   if (!note || !note.message) return null;
 
   return (
-    <div className="sticky-note">
+    <div className="sticky-note hud">
+      <span className="sticky-note-label">// a note for you</span>
       <p>{note.message}</p>
       <time>
         {new Date(note.updated_at).toLocaleString(undefined, {

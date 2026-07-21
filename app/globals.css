@@ -282,31 +282,41 @@ header.site-header .eyebrow {
   position: fixed;
   right: 28px;
   top: 50%;
-  transform: translateY(-50%) rotate(3deg);
+  transform: translateY(-50%);
   z-index: 15;
-  width: min(220px, calc(100vw - 56px));
-  padding: 20px 18px 16px;
-  background: #f5e6a3;
-  color: #3a3220;
-  border-radius: 2px;
-  box-shadow: 3px 6px 18px rgba(0, 0, 0, 0.45);
-  font-family: var(--font-body);
+  width: min(260px, calc(100vw - 56px));
+  padding: 24px 22px 20px;
+}
+
+.sticky-note-label {
+  display: block;
+  font-family: var(--font-mono);
+  font-size: 0.7rem;
+  letter-spacing: 0.25em;
+  text-transform: uppercase;
+  color: var(--neon-pink);
+  text-shadow: 0 0 8px rgba(255, 111, 176, 0.6), 0 0 20px rgba(255, 111, 176, 0.3);
+  opacity: 0.9;
+  margin-bottom: 12px;
 }
 
 .sticky-note p {
   margin: 0;
-  font-size: 0.95rem;
-  line-height: 1.4;
+  font-family: var(--font-body);
+  font-size: 1rem;
+  line-height: 1.5;
+  color: var(--text-primary);
   word-break: break-word;
 }
 
 .sticky-note time {
   display: block;
-  margin-top: 12px;
+  margin-top: 14px;
   font-family: var(--font-mono);
-  font-size: 0.68rem;
-  letter-spacing: 0.03em;
-  color: #6b6040;
+  font-size: 0.7rem;
+  letter-spacing: 0.05em;
+  color: var(--neon-cyan);
+  opacity: 0.7;
 }
 
 .letters-cta {
