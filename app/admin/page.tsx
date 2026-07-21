@@ -1,14 +1,23 @@
 "use client";
 
 import { useEffect, useState } from "react";
+import HomeLink from "@/components/HomeLink";
 
-type Letter = { id: string; slug: string; title: string; created_at: string; published: boolean };
+type Letter = {
+  id: string;
+  slug: string;
+  title: string;
+  content: string;
+  created_at: string;
+  published: boolean;
+};
 
 export default function AdminPage() {
   const [title, setTitle] = useState("");
   const [content, setContent] = useState("");
   const [status, setStatus] = useState("");
   const [letters, setLetters] = useState<Letter[]>([]);
+  const [editingSlug, setEditingSlug] = useState<string | null>(null);
 
   const [note, setNote] = useState("");
   const [currentNote, setCurrentNote] = useState<{ message: string; updated_at: string } | null>(null);
@@ -48,6 +57,25 @@ export default function AdminPage() {
 
   async function handleSubmit(e: React.FormEvent) {
     e.preventDefault();
+    if (editingSlug) {
+      setStatus("Saving...");
+      const res = await fetch(`/api/letters/${editingSlug}`, {
+        method: "PUT",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ title, content }),
+      });
+      if (res.ok) {
+        setStatus("Saved!");
+        setTitle("");
+        setContent("");
+        setEditingSlug(null);
+        loadLetters();
+      } else {
+        setStatus("Something went wrong.");
+      }
+      return;
+    }
+
     setStatus("Publishing...");
     const res = await fetch("/api/letters", {
       method: "POST",
@@ -64,16 +92,32 @@ export default function AdminPage() {
     }
   }
 
+  function handleEdit(letter: Letter) {
+    setEditingSlug(letter.slug);
+    setTitle(letter.title);
+    setContent(letter.content);
+    setStatus("");
+  }
+
+  function handleCancelEdit() {
+    setEditingSlug(null);
+    setTitle("");
+    setContent("");
+    setStatus("");
+  }
+
   async function handleDelete(slug: string) {
     if (!confirm("Delete this letter?")) return;
     await fetch(`/api/letters/${slug}`, { method: "DELETE" });
+    if (editingSlug === slug) handleCancelEdit();
     loadLetters();
   }
 
   return (
     <main className="container">
+      <HomeLink />
       <div className="eyebrow" style={{ marginBottom: 6 }}>// admin</div>
-      <h1>Write a letter</h1>
+      <h1>{editingSlug ? "Edit letter" : "Write a letter"}</h1>
       <form className="admin-form hud" onSubmit={handleSubmit}>
         <input
           type="text"
@@ -88,7 +132,12 @@ export default function AdminPage() {
           onChange={(e) => setContent(e.target.value)}
           required
         />
-        <button type="submit">Publish</button>
+        <button type="submit">{editingSlug ? "Save changes" : "Publish"}</button>
+        {editingSlug && (
+          <button type="button" onClick={handleCancelEdit} style={{ marginLeft: 10 }}>
+            Cancel
+          </button>
+        )}
         {status && <span style={{ marginLeft: 12 }}>{status}</span>}
       </form>
 
@@ -98,9 +147,14 @@ export default function AdminPage() {
           {letters.map((l) => (
             <li key={l.id}>
               {l.title}{" "}
-              <button onClick={() => handleDelete(l.slug)} style={{ marginLeft: 8 }}>
-                delete
-              </button>
+              <span>
+                <button onClick={() => handleEdit(l)} style={{ marginLeft: 8 }}>
+                  edit
+                </button>
+                <button onClick={() => handleDelete(l.slug)} style={{ marginLeft: 8 }}>
+                  delete
+                </button>
+              </span>
             </li>
           ))}
         </ul>

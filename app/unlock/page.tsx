@@ -2,6 +2,7 @@
 
 import { Suspense, useState } from "react";
 import { useRouter, useSearchParams } from "next/navigation";
+import HomeLink from "@/components/HomeLink";
 
 function UnlockForm() {
   const [password, setPassword] = useState("");
@@ -50,6 +51,7 @@ function UnlockForm() {
 export default function UnlockPage() {
   return (
     <main className="unlock-page">
+      <HomeLink />
       <Suspense fallback={null}>
         <UnlockForm />
       </Suspense>

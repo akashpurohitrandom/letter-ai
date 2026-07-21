@@ -1,5 +1,6 @@
 import { supabase } from "@/lib/supabase";
 import Link from "next/link";
+import HomeLink from "@/components/HomeLink";
 
 export const dynamic = "force-dynamic";
 
@@ -12,6 +13,7 @@ export default async function LettersPage() {
 
   return (
     <main className="container">
+      <HomeLink />
       <header className="site-header">
         <div className="eyebrow">// unlocked for you</div>
         <h1>Letters</h1>

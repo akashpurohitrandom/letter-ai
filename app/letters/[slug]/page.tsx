@@ -2,6 +2,7 @@ import { supabase } from "@/lib/supabase";
 import Link from "next/link";
 import { notFound } from "next/navigation";
 import ReactMarkdown from "react-markdown";
+import HomeLink from "@/components/HomeLink";
 
 export const dynamic = "force-dynamic";
 
@@ -17,7 +18,8 @@ export default async function LetterPage({ params }: { params: { slug: string } 
 
   return (
     <main className="container">
-      <Link href="/" className="back-link">&larr; back to all letters</Link>
+      <HomeLink />
+      <Link href="/letters" className="back-link">&larr; back to all letters</Link>
       <h1>{letter.title}</h1>
       <time>
         {new Date(letter.created_at).toLocaleDateString(undefined, {
