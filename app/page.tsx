@@ -14,8 +14,8 @@ export default async function Home() {
 
   return (
     <main className="landing">
-      <LettersGate count={count || 0} />
       <Clock />
+      <LettersGate count={count || 0} />
       <GoogleSearch />
       <StickyNote />
     </main>

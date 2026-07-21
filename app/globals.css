@@ -373,7 +373,7 @@ header.site-header .eyebrow {
   position: fixed;
   bottom: 20px;
   right: 20px;
-  width: min(320px, calc(100vw - 40px));
+  width: min(260px, calc(100vw - 40px));
   z-index: 10;
   filter: drop-shadow(0 0 30px rgba(0, 0, 0, 0.45));
 }
@@ -512,3 +512,47 @@ header.site-header .eyebrow {
 }
 
 .admin-list button:hover { background: rgba(255,111,176,0.12); }
+
+/* ---------- Mobile: stack landing-page overlays instead of fixed-positioning them ---------- */
+@media (max-width: 640px) {
+  .landing {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: flex-start;
+    gap: 18px;
+    min-height: 100vh;
+    padding: 56px 20px 120px;
+  }
+
+  .ist-clock,
+  .letters-cta,
+  .google-search,
+  .sticky-note {
+    position: static;
+    transform: none;
+    top: auto;
+    left: auto;
+    right: auto;
+    bottom: auto;
+  }
+
+  .ist-clock-time { font-size: 2.4rem; }
+  .ist-clock-label { font-size: 0.7rem; white-space: normal; text-align: center; }
+
+  .letters-cta { padding: 14px 26px; font-size: 1rem; }
+
+  .google-search,
+  .sticky-note {
+    width: 100%;
+    max-width: 320px;
+  }
+
+  .sticky-note { text-align: center; }
+
+  .spotify-corner {
+    width: calc(100vw - 24px);
+    right: 12px;
+    bottom: 12px;
+  }
+}
