@@ -1,5 +1,5 @@
 import "./globals.css";
-import SpotifyPlayer from "@/components/SpotifyPlayer";
+import ConditionalSpotify from "@/components/ConditionalSpotify";
 
 export const metadata = {
   title: "Letters",
@@ -20,7 +20,7 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
       <body>
         <div className="bg-layer" />
         <div className="scanlines" />
-        <SpotifyPlayer />
+        <ConditionalSpotify />
         {children}
       </body>
     </html>

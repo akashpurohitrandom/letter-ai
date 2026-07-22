@@ -1,23 +1,10 @@
-import { supabase } from "@/lib/supabase";
-import LettersGate from "@/components/LettersGate";
-import Clock from "@/components/Clock";
-import GoogleSearch from "@/components/GoogleSearch";
-import StickyNote from "@/components/StickyNote";
+import DoorForm from "@/components/DoorForm";
 
-export const dynamic = "force-dynamic";
-
-export default async function Home() {
-  const { count } = await supabase
-    .from("letters")
-    .select("*", { count: "exact", head: true })
-    .eq("published", true);
-
+export default function DoorPage() {
   return (
-    <main className="landing">
-      <Clock />
-      <LettersGate count={count || 0} />
-      <GoogleSearch />
-      <StickyNote />
+    <main className="door-page">
+      <div className="door-bg" />
+      <DoorForm />
     </main>
   );
 }

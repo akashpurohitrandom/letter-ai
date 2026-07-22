@@ -22,7 +22,7 @@ function UnlockForm() {
     });
     setLoading(false);
     if (res.ok) {
-      router.push(params.get("next") || "/");
+      router.push(params.get("next") || "/main");
       router.refresh();
     } else {
       setError("That's not quite it — try again.");

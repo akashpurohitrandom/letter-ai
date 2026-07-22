@@ -15,7 +15,7 @@ export async function GET() {
 // the same way /letters is, so we check the auth cookie here directly.
 export async function POST(req: NextRequest) {
   const token = req.cookies.get(AUTH_COOKIE_NAME)?.value;
-  if (!(await isValidToken(token))) {
+  if (!(await isValidToken(token, process.env.SITE_PASSWORD || ""))) {
     return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
   }
 

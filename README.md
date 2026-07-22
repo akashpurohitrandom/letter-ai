@@ -1,9 +1,10 @@
 # Letters
 
-A surprise site: a landing page with a background photo and a Spotify playlist player, a "LETTERS" button that asks for a password, and a blog-style letters section behind it.
+A surprise site: a typed-letter "door" gate, then a landing page with a background photo and a Spotify playlist player, a "LETTERS" button that asks for a password, and a blog-style letters section behind it.
 
-- Landing page (`/`) is public — shows the background, the Spotify playlist widget, and a LETTERS button with a live count.
-- Clicking LETTERS asks for a password (in a modal); the correct one unlocks `/letters`.
+- `/` is the door — a typewriter-animated letter followed by a password prompt. Entering the door password unlocks `/main` for that browser session only (closing the browser means it replays next time).
+- `/main` is public once past the door — shows the background, the Spotify playlist widget, and a LETTERS button with a live count.
+- Clicking LETTERS asks for a separate password (in a modal); the correct one unlocks `/letters`, and stays remembered for 30 days.
 - `/letters` is a blog-style list; click into any letter to read it in full.
 - `/admin` lets you write and publish new letters instantly — currently left unprotected (add auth before sharing widely).
 
@@ -42,7 +43,8 @@ Takes about 10–15 minutes the first time. None of it requires ongoing payment 
    cp .env.example .env.local
    ```
 2. Fill in every value in `.env.local`:
-   - `SITE_PASSWORD` — whatever password you want your special someone to type in.
+   - `SITE_PASSWORD` — the password for the LETTERS gate.
+   - `DOOR_PASSWORD` — the password for the very first door page (defaults to `july2026` if unset).
    - `AUTH_SECRET` — any long random string (mash your keyboard for 30+ characters).
    - The three Supabase values from step 1.4.
    - `NEXT_PUBLIC_SPOTIFY_PLAYLIST_ID` from step 2.2.
@@ -54,7 +56,7 @@ npm install
 npm run dev
 ```
 
-Visit http://localhost:3000 — you should see the background, the Spotify player in the corner, and the LETTERS button with a count. Click it, enter your password, and you'll land on the (empty) letters list. Go to http://localhost:3000/admin to write your first letter.
+Visit http://localhost:3000 — you'll first see the door page with the typed letter and a password prompt. Enter the door password to reach `/main`, where you'll see the background, the Spotify player in the corner, and the LETTERS button with a count. Click it, enter the LETTERS password, and you'll land on the (empty) letters list. Go to http://localhost:3000/admin to write your first letter.
 
 ## 5. Deploy to Vercel
 
@@ -72,4 +74,4 @@ Browsers block audio from auto-playing without a click — this is a browser rul
 
 ## Notes on security
 
-This is built for a personal, low-stakes gift — not a bank. The password gate (protecting `/letters`) is a single shared password, which is intentional and simple. `/admin` is currently left open with no password — anyone with the link could write letters. Add protection there before sharing the site widely, or just ask and I'll wire it up.
+This is built for a personal, low-stakes gift — not a bank. Both password gates (the door and LETTERS) are single shared passwords, which is intentional and simple. The door password isn't remembered between browser sessions on purpose — it replays every visit. `/admin` is currently left open with no password — anyone with the link could write letters. Add protection there before sharing the site widely, or just ask and I'll wire it up.

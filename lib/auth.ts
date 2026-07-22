@@ -1,4 +1,5 @@
 export const AUTH_COOKIE_NAME = "letters_auth";
+export const DOOR_COOKIE_NAME = "door_auth";
 
 function getSecret() {
   return process.env.AUTH_SECRET || "fallback-dev-secret-change-me";
@@ -36,12 +37,12 @@ function constantTimeEqual(a: string, b: string) {
   return diff === 0;
 }
 
-export async function isValidToken(token: string | undefined | null) {
+export async function isValidToken(token: string | undefined | null, expectedPassword: string) {
   if (!token) return false;
-  const expected = await signToken(process.env.SITE_PASSWORD || "");
+  const expected = await signToken(expectedPassword);
   return constantTimeEqual(token, expected);
 }
 
-export function checkPassword(password: string) {
-  return password === (process.env.SITE_PASSWORD || "");
+export function checkPassword(password: string, expectedPassword: string) {
+  return password === expectedPassword;
 }
