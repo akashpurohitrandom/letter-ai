@@ -1,8 +1,8 @@
 import { supabase } from "@/lib/supabase";
 import LettersGate from "@/components/LettersGate";
 import Clock from "@/components/Clock";
-import GoogleSearch from "@/components/GoogleSearch";
 import StickyNote from "@/components/StickyNote";
+import GamesNav from "@/components/GamesNav";
 
 export const dynamic = "force-dynamic";
 
@@ -16,8 +16,8 @@ export default async function MainPage() {
     <main className="landing">
       <Clock />
       <LettersGate count={count || 0} />
-      <GoogleSearch />
       <StickyNote />
+      <GamesNav />
     </main>
   );
 }
