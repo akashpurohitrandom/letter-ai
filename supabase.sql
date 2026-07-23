@@ -31,3 +31,24 @@ alter table sticky_note enable row level security;
 create policy "Public can read the sticky note"
 on sticky_note for select
 using (true);
+
+-- A single persistent, asynchronous Tic Tac Toe game — one shared board (id = 1)
+-- that either player can move on from any device, at any time. A move locks
+-- the board until the other player's turn; a finished game freezes the board
+-- until "New game" resets it, and the cumulative win record never resets.
+create table if not exists tic_tac_toe (
+  id int primary key default 1,
+  board jsonb not null default '[null,null,null,null,null,null,null,null,null]',
+  next_player text not null default 'X',
+  status text not null default 'in_progress', -- 'in_progress' | 'X' | 'O' | 'draw'
+  player1_wins int not null default 0,
+  player2_wins int not null default 0,
+  draws int not null default 0,
+  updated_at timestamptz default now()
+);
+
+alter table tic_tac_toe enable row level security;
+
+create policy "Public can read the game state"
+on tic_tac_toe for select
+using (true);

@@ -1,54 +1,86 @@
 "use client";
 
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import HomeLink from "@/components/HomeLink";
 
 type Cell = "X" | "O" | null;
+type Status = "in_progress" | "X" | "O" | "draw";
 
-const LINES = [
-  [0, 1, 2],
-  [3, 4, 5],
-  [6, 7, 8],
-  [0, 3, 6],
-  [1, 4, 7],
-  [2, 5, 8],
-  [0, 4, 8],
-  [2, 4, 6],
-];
+type GameState = {
+  board: Cell[];
+  next_player: "X" | "O";
+  status: Status;
+  player1_wins: number;
+  player2_wins: number;
+  draws: number;
+};
 
-function getWinner(squares: Cell[]): Cell | null {
-  for (const [a, b, c] of LINES) {
-    if (squares[a] && squares[a] === squares[b] && squares[a] === squares[c]) {
-      return squares[a];
-    }
-  }
-  return null;
-}
+const POLL_MS = 4000;
 
 export default function TicTacToePage() {
-  const [squares, setSquares] = useState<Cell[]>(Array(9).fill(null));
-  const [xIsNext, setXIsNext] = useState(true);
+  const [game, setGame] = useState<GameState | null>(null);
+  const [error, setError] = useState("");
+  const [busy, setBusy] = useState(false);
 
-  const winner = getWinner(squares);
-  const isDraw = !winner && squares.every(Boolean);
-
-  function handleClick(i: number) {
-    if (squares[i] || winner) return;
-    const next = squares.slice();
-    next[i] = xIsNext ? "X" : "O";
-    setSquares(next);
-    setXIsNext(!xIsNext);
+  async function load() {
+    const res = await fetch("/api/tic-tac-toe", { cache: "no-store" });
+    if (res.ok) setGame(await res.json());
   }
 
-  function handleReset() {
-    setSquares(Array(9).fill(null));
-    setXIsNext(true);
+  useEffect(() => {
+    load();
+    const id = setInterval(load, POLL_MS);
+    return () => clearInterval(id);
+  }, []);
+
+  async function handleMove(index: number) {
+    if (!game || game.board[index] || game.status !== "in_progress" || busy) return;
+    setBusy(true);
+    setError("");
+    const res = await fetch("/api/tic-tac-toe", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ type: "move", index }),
+    });
+    setBusy(false);
+    if (res.ok) {
+      setGame(await res.json());
+    } else {
+      const data = await res.json().catch(() => ({}));
+      setError(data.error || "Something went wrong.");
+      load();
+    }
+  }
+
+  async function handleReset() {
+    setBusy(true);
+    setError("");
+    const res = await fetch("/api/tic-tac-toe", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ type: "reset" }),
+    });
+    setBusy(false);
+    if (res.ok) setGame(await res.json());
+  }
+
+  if (!game) {
+    return (
+      <main className="container">
+        <HomeLink />
+        <header className="site-header">
+          <div className="eyebrow">// a little game</div>
+          <h1>Tic Tac Toe</h1>
+        </header>
+      </main>
+    );
   }
 
   let status: string;
-  if (winner) status = `${winner} wins!`;
-  else if (isDraw) status = "It's a draw.";
-  else status = `${xIsNext ? "X" : "O"}'s turn`;
+  if (game.status === "X") status = "Player 1 (X) wins!";
+  else if (game.status === "O") status = "Player 2 (O) wins!";
+  else if (game.status === "draw") status = "It's a draw.";
+  else status = `${game.next_player === "X" ? "Player 1 (X)" : "Player 2 (O)"}'s turn`;
 
   return (
     <main className="container">
@@ -60,16 +92,32 @@ export default function TicTacToePage() {
 
       <div className="ttt-wrap hud">
         <p className="ttt-status">{status}</p>
+
         <div className="ttt-board">
-          {squares.map((val, i) => (
-            <button key={i} className="ttt-cell" onClick={() => handleClick(i)}>
+          {game.board.map((val, i) => (
+            <button
+              key={i}
+              className="ttt-cell"
+              onClick={() => handleMove(i)}
+              disabled={!!val || game.status !== "in_progress" || busy}
+            >
               {val}
             </button>
           ))}
         </div>
-        <button className="ttt-reset" onClick={handleReset}>
-          Play again
-        </button>
+
+        {error && <p className="error">{error}</p>}
+
+        {game.status !== "in_progress" && (
+          <button className="ttt-reset" onClick={handleReset} disabled={busy}>
+            New game
+          </button>
+        )}
+
+        <p className="ttt-record">
+          Player 1 wins: {game.player1_wins} &nbsp;·&nbsp; Player 2 wins: {game.player2_wins}
+          &nbsp;·&nbsp; Draws: {game.draws}
+        </p>
       </div>
     </main>
   );
