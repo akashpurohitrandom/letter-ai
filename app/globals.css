@@ -28,17 +28,24 @@ body {
   position: relative;
 }
 
-/* Fixed background photo with a dark tech-noir wash so text stays readable */
+/* Fixed background photo with a dark tech-noir wash so text stays readable.
+   Which photo depends on time of day (IST), set server-side as a body class. */
 .bg-layer {
   position: fixed;
   inset: 0;
   z-index: -2;
   background-image:
     linear-gradient(180deg, rgba(8, 6, 20, 0.78) 0%, rgba(8, 6, 20, 0.55) 40%, rgba(6, 4, 16, 0.88) 100%),
-    url('/bg.png');
+    url('/bg-day.jpg');
   background-size: cover;
   background-position: center;
   background-attachment: fixed;
+}
+
+body.theme-night .bg-layer {
+  background-image:
+    linear-gradient(180deg, rgba(8, 6, 20, 0.78) 0%, rgba(8, 6, 20, 0.55) 40%, rgba(6, 4, 16, 0.88) 100%),
+    url('/bg-night.jpg');
 }
 
 /* Faint CRT scanline texture — quiet, static, no motion */

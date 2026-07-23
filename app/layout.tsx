@@ -1,12 +1,28 @@
 import "./globals.css";
 import ConditionalSpotify from "@/components/ConditionalSpotify";
 
+// Background depends on time of day (IST), computed per-request.
+export const dynamic = "force-dynamic";
+
 export const metadata = {
   title: "Letters",
   description: "A little collection of letters",
 };
 
+function getTheme(): "theme-day" | "theme-night" {
+  const hour = Number(
+    new Intl.DateTimeFormat("en-GB", {
+      timeZone: "Asia/Kolkata",
+      hour: "2-digit",
+      hourCycle: "h23",
+    }).format(new Date())
+  );
+  return hour >= 6 && hour < 18 ? "theme-day" : "theme-night";
+}
+
 export default function RootLayout({ children }: { children: React.ReactNode }) {
+  const theme = getTheme();
+
   return (
     <html lang="en">
       <head>
@@ -17,7 +33,7 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
           rel="stylesheet"
         />
       </head>
-      <body>
+      <body className={theme}>
         <div className="bg-layer" />
         <div className="scanlines" />
         <ConditionalSpotify />

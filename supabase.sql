@@ -36,6 +36,9 @@ using (true);
 -- that either player can move on from any device, at any time. A move locks
 -- the board until the other player's turn; a finished game freezes the board
 -- until "New game" resets it, and the cumulative win record never resets.
+-- total_moves only ever goes up (bumped on every move AND on reset), mirroring
+-- chat_box.total_count — the client uses it to lock its own board after making
+-- a move until this counter changes (i.e. someone else has played).
 create table if not exists tic_tac_toe (
   id int primary key default 1,
   board jsonb not null default '[null,null,null,null,null,null,null,null,null]',
@@ -44,6 +47,7 @@ create table if not exists tic_tac_toe (
   player1_wins int not null default 0,
   player2_wins int not null default 0,
   draws int not null default 0,
+  total_moves int not null default 0,
   updated_at timestamptz default now()
 );
 
@@ -52,6 +56,10 @@ alter table tic_tac_toe enable row level security;
 create policy "Public can read the game state"
 on tic_tac_toe for select
 using (true);
+
+-- Adds total_moves to a tic_tac_toe table that already existed before this
+-- column was introduced. No-ops if the table is being created fresh above.
+alter table tic_tac_toe add column if not exists total_moves int not null default 0;
 
 -- A tiny persistent chat box (id = 1) that holds only the last 5 messages —
 -- older ones are dropped as new ones arrive. total_count only ever goes up,

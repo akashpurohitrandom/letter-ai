@@ -13,14 +13,22 @@ type GameState = {
   player1_wins: number;
   player2_wins: number;
   draws: number;
+  total_moves: number;
 };
 
 const POLL_MS = 4000;
+const LAST_MOVE_KEY = "ttt_last_move_total";
 
 export default function TicTacToePage() {
   const [game, setGame] = useState<GameState | null>(null);
   const [error, setError] = useState("");
   const [busy, setBusy] = useState(false);
+  const [lastMoveTotal, setLastMoveTotal] = useState<number | null>(null);
+
+  useEffect(() => {
+    const stored = localStorage.getItem(LAST_MOVE_KEY);
+    if (stored) setLastMoveTotal(Number(stored));
+  }, []);
 
   async function load() {
     const res = await fetch("/api/tic-tac-toe", { cache: "no-store" });
@@ -33,8 +41,11 @@ export default function TicTacToePage() {
     return () => clearInterval(id);
   }, []);
 
+  const waitingForOpponent =
+    !!game && lastMoveTotal !== null && lastMoveTotal === game.total_moves;
+
   async function handleMove(index: number) {
-    if (!game || game.board[index] || game.status !== "in_progress" || busy) return;
+    if (!game || game.board[index] || game.status !== "in_progress" || busy || waitingForOpponent) return;
     setBusy(true);
     setError("");
     const res = await fetch("/api/tic-tac-toe", {
@@ -44,7 +55,10 @@ export default function TicTacToePage() {
     });
     setBusy(false);
     if (res.ok) {
-      setGame(await res.json());
+      const data = await res.json();
+      setGame(data);
+      setLastMoveTotal(data.total_moves);
+      localStorage.setItem(LAST_MOVE_KEY, String(data.total_moves));
     } else {
       const data = await res.json().catch(() => ({}));
       setError(data.error || "Something went wrong.");
@@ -99,7 +113,7 @@ export default function TicTacToePage() {
               key={i}
               className="ttt-cell"
               onClick={() => handleMove(i)}
-              disabled={!!val || game.status !== "in_progress" || busy}
+              disabled={!!val || game.status !== "in_progress" || busy || waitingForOpponent}
             >
               {val}
             </button>
@@ -107,6 +121,10 @@ export default function TicTacToePage() {
         </div>
 
         {error && <p className="error">{error}</p>}
+
+        {waitingForOpponent && game.status === "in_progress" && (
+          <p className="chat-hint">You made the last move — waiting for the other player.</p>
+        )}
 
         {game.status !== "in_progress" && (
           <button className="ttt-reset" onClick={handleReset} disabled={busy}>

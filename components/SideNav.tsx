@@ -5,7 +5,8 @@ import Link from "next/link";
 import { useRouter } from "next/navigation";
 
 const CHAT_LAST_SENT_KEY = "chat_last_sent_count";
-const CHAT_POLL_MS = 5000;
+const TTT_LAST_MOVE_KEY = "ttt_last_move_total";
+const POLL_MS = 5000;
 
 export default function SideNav({ letterCount }: { letterCount: number }) {
   const [open, setOpen] = useState(false);
@@ -13,6 +14,7 @@ export default function SideNav({ letterCount }: { letterCount: number }) {
   const [error, setError] = useState("");
   const [loading, setLoading] = useState(false);
   const [chatPending, setChatPending] = useState(false);
+  const [tttPending, setTttPending] = useState(false);
   const router = useRouter();
 
   useEffect(() => {
@@ -28,8 +30,26 @@ export default function SideNav({ letterCount }: { letterCount: number }) {
         // ignore — badge just stays hidden
       }
     }
+
+    async function checkTicTacToe() {
+      try {
+        const res = await fetch("/api/tic-tac-toe", { cache: "no-store" });
+        if (!res.ok) return;
+        const data = await res.json();
+        const stored = localStorage.getItem(TTT_LAST_MOVE_KEY);
+        const lastMove = stored ? Number(stored) : null;
+        setTttPending(data.total_moves > 0 && lastMove !== data.total_moves);
+      } catch {
+        // ignore — badge just stays hidden
+      }
+    }
+
     checkChat();
-    const id = setInterval(checkChat, CHAT_POLL_MS);
+    checkTicTacToe();
+    const id = setInterval(() => {
+      checkChat();
+      checkTicTacToe();
+    }, POLL_MS);
     return () => clearInterval(id);
   }, []);
 
@@ -58,6 +78,7 @@ export default function SideNav({ letterCount }: { letterCount: number }) {
           Letters
         </button>
         <Link href="/games/tic-tac-toe" className="side-link">
+          {tttPending && <span className="side-link-badge">*</span>}
           Tic Tac Toe
         </Link>
         <Link href="/games/chat" className="side-link">

@@ -12,6 +12,7 @@ type GameRow = {
   player1_wins: number;
   player2_wins: number;
   draws: number;
+  total_moves: number;
 };
 
 const LINES = [
@@ -40,6 +41,7 @@ const DEFAULT_ROW = {
   player1_wins: 0,
   player2_wins: 0,
   draws: 0,
+  total_moves: 0,
 };
 
 async function getOrCreateRow(db: ReturnType<typeof supabaseAdmin>): Promise<GameRow> {
@@ -79,6 +81,9 @@ export async function POST(req: NextRequest) {
           board: Array(9).fill(null),
           next_player: "X",
           status: "in_progress",
+          // Bumped here too so every device's "waiting for opponent" lock
+          // (based on total_moves) clears for the fresh game.
+          total_moves: row.total_moves + 1,
           updated_at: new Date().toISOString(),
         })
         .eq("id", 1)
@@ -109,6 +114,7 @@ export async function POST(req: NextRequest) {
         updated_at: new Date().toISOString(),
         next_player: row.next_player === "X" ? "O" : "X",
         status: "in_progress",
+        total_moves: row.total_moves + 1,
       };
 
       if (winner) {
