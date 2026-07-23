@@ -1,6 +1,9 @@
 import Link from "next/link";
 
-const LINKS = [{ href: "/games/tic-tac-toe", label: "Tic Tac Toe" }];
+const LINKS = [
+  { href: "/games/tic-tac-toe", label: "Tic Tac Toe" },
+  { href: "/games/chat", label: "Chat" },
+];
 
 export default function GamesNav() {
   return (

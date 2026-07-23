@@ -52,3 +52,20 @@ alter table tic_tac_toe enable row level security;
 create policy "Public can read the game state"
 on tic_tac_toe for select
 using (true);
+
+-- A tiny persistent chat box (id = 1) that holds only the last 5 messages —
+-- older ones are dropped as new ones arrive. total_count only ever goes up,
+-- used by the client to detect "has anyone replied to my last message yet"
+-- without any real login/identity system.
+create table if not exists chat_box (
+  id int primary key default 1,
+  messages jsonb not null default '[]',
+  total_count int not null default 0,
+  updated_at timestamptz default now()
+);
+
+alter table chat_box enable row level security;
+
+create policy "Public can read the chat box"
+on chat_box for select
+using (true);
