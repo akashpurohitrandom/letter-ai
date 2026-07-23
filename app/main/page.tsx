@@ -1,8 +1,7 @@
 import { supabase } from "@/lib/supabase";
-import LettersGate from "@/components/LettersGate";
 import Clock from "@/components/Clock";
 import StickyNote from "@/components/StickyNote";
-import GamesNav from "@/components/GamesNav";
+import SideNav from "@/components/SideNav";
 
 export const dynamic = "force-dynamic";
 
@@ -15,9 +14,8 @@ export default async function MainPage() {
   return (
     <main className="landing">
       <Clock />
-      <LettersGate count={count || 0} />
       <StickyNote />
-      <GamesNav />
+      <SideNav letterCount={count || 0} />
     </main>
   );
 }

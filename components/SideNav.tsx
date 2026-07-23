@@ -1,14 +1,37 @@
 "use client";
 
-import { useState } from "react";
+import { useEffect, useState } from "react";
+import Link from "next/link";
 import { useRouter } from "next/navigation";
 
-export default function LettersGate({ count }: { count: number }) {
+const CHAT_LAST_SENT_KEY = "chat_last_sent_count";
+const CHAT_POLL_MS = 5000;
+
+export default function SideNav({ letterCount }: { letterCount: number }) {
   const [open, setOpen] = useState(false);
   const [password, setPassword] = useState("");
   const [error, setError] = useState("");
   const [loading, setLoading] = useState(false);
+  const [chatPending, setChatPending] = useState(false);
   const router = useRouter();
+
+  useEffect(() => {
+    async function checkChat() {
+      try {
+        const res = await fetch("/api/chat", { cache: "no-store" });
+        if (!res.ok) return;
+        const data = await res.json();
+        const stored = localStorage.getItem(CHAT_LAST_SENT_KEY);
+        const lastSent = stored ? Number(stored) : null;
+        setChatPending(data.total_count > 0 && lastSent !== data.total_count);
+      } catch {
+        // ignore — badge just stays hidden
+      }
+    }
+    checkChat();
+    const id = setInterval(checkChat, CHAT_POLL_MS);
+    return () => clearInterval(id);
+  }, []);
 
   async function handleSubmit(e: React.FormEvent) {
     e.preventDefault();
@@ -29,10 +52,19 @@ export default function LettersGate({ count }: { count: number }) {
 
   return (
     <>
-      <button className="letters-cta hud" onClick={() => setOpen(true)}>
-        LETTERS
-        <span className="letters-count">{count}</span>
-      </button>
+      <nav className="side-nav">
+        <button className="side-link" onClick={() => setOpen(true)}>
+          <span className="side-link-count">{letterCount}</span>
+          Letters
+        </button>
+        <Link href="/games/tic-tac-toe" className="side-link">
+          Tic Tac Toe
+        </Link>
+        <Link href="/games/chat" className="side-link">
+          {chatPending && <span className="side-link-badge">*</span>}
+          Chat
+        </Link>
+      </nav>
 
       {open && (
         <div className="modal-overlay" onClick={() => setOpen(false)}>

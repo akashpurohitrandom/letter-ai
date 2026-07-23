@@ -367,56 +367,26 @@ header.site-header .eyebrow {
   opacity: 0.7;
 }
 
-.letters-cta {
-  position: fixed;
-  top: 24px;
-  right: 24px;
-  z-index: 20;
-  display: inline-flex;
-  align-items: center;
-  gap: 12px;
-  padding: 16px 28px;
-  background: var(--panel);
-  backdrop-filter: blur(14px);
-  -webkit-backdrop-filter: blur(14px);
-  border: 1px solid var(--border-glow);
-  border-radius: 4px;
-  font-family: var(--font-display);
-  font-weight: 700;
-  font-size: 1.1rem;
-  letter-spacing: 0.15em;
-  color: #fff;
-  cursor: pointer;
-  box-shadow: 0 0 0 1px rgba(0,0,0,0.2), 0 0 40px -12px var(--neon-violet);
-  transition: filter 0.15s, transform 0.15s;
-}
-
-.letters-cta:hover { filter: brightness(1.15); transform: translateY(-2px); }
-
-.letters-count {
-  font-family: var(--font-mono);
-  font-size: 0.85rem;
-  font-weight: 500;
-  letter-spacing: 0.05em;
-  background: rgba(94, 234, 212, 0.15);
-  color: var(--neon-cyan);
-  border-radius: 999px;
-  padding: 3px 10px;
-}
-
-/* ---------- Games nav ---------- */
-.games-nav {
+/* ---------- Side nav (Letters + games), left side on desktop ---------- */
+.side-nav {
   position: fixed;
   top: 50%;
   left: 28px;
   transform: translateY(-50%);
-  z-index: 15;
+  z-index: 20;
   display: flex;
   flex-direction: column;
+  align-items: flex-start;
   gap: 16px;
 }
 
-.games-nav-link {
+.side-link {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  background: none;
+  border: none;
+  padding: 0;
   font-family: var(--font-mono);
   font-size: 0.85rem;
   letter-spacing: 0.1em;
@@ -425,10 +395,28 @@ header.site-header .eyebrow {
   color: var(--neon-pink);
   text-shadow: 0 0 8px rgba(255, 111, 176, 0.6), 0 0 20px rgba(255, 111, 176, 0.3);
   opacity: 0.85;
+  cursor: pointer;
   transition: opacity 0.15s, transform 0.15s;
 }
 
-.games-nav-link:hover { opacity: 1; transform: translateX(4px); }
+.side-link:hover { opacity: 1; transform: translateX(4px); }
+
+.side-link-count {
+  font-family: var(--font-mono);
+  font-size: 0.75rem;
+  font-weight: 500;
+  letter-spacing: 0.05em;
+  background: rgba(94, 234, 212, 0.15);
+  color: var(--neon-cyan);
+  text-shadow: none;
+  border-radius: 999px;
+  padding: 2px 9px;
+}
+
+.side-link-badge {
+  color: var(--neon-cyan);
+  text-shadow: 0 0 8px rgba(94, 234, 212, 0.8), 0 0 18px rgba(94, 234, 212, 0.5);
+}
 
 .modal-overlay {
   position: fixed;
@@ -777,8 +765,7 @@ header.site-header .eyebrow {
     padding: 56px 20px 120px;
   }
 
-  .ist-clock,
-  .letters-cta {
+  .ist-clock {
     position: static;
     transform: none;
     top: auto;
@@ -789,8 +776,6 @@ header.site-header .eyebrow {
 
   .ist-clock-time { font-size: 2.4rem; }
   .ist-clock-label { font-size: 0.7rem; white-space: normal; text-align: center; }
-
-  .letters-cta { padding: 14px 26px; font-size: 1rem; }
 
   .spotify-corner {
     width: calc(100vw - 24px);
@@ -818,7 +803,7 @@ header.site-header .eyebrow {
   .sticky-note time { margin-top: 6px; font-size: 0.65rem; }
 
   /* A single row above the sticky note, matching its fixed-bottom stacking */
-  .games-nav {
+  .side-nav {
     position: fixed;
     top: auto;
     left: 12px;
@@ -826,6 +811,7 @@ header.site-header .eyebrow {
     bottom: 192px;
     transform: none;
     flex-direction: row;
+    align-items: center;
     justify-content: center;
     gap: 24px;
   }
